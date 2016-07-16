@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  web-front:
+    build: juez
+    environment:
+
+  fiscalia:
+    build: fiscalia
+
+  queue:
+    image: rabbit-mq
+
+  store:
+    image: postgres:9.5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pg8675309
