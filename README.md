@@ -11,7 +11,7 @@ It can be use with docker compose, docker swarm and docker machine.
 
 A load balancer distribute all the requests between Ruby on rails servers. If a Student send they solution link, the servers send a message in a pub/sub queue to some workers using ruby...
 
-![Cluster](https://raw.githubusercontent.com/Lascilab/juzgado/master/Juzgado.jpg)
+![Cluster](https://raw.githubusercontent.com/Lascilab/juzgado/master/Juzgado.png)
 
 # Usage
 

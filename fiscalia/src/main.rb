@@ -64,19 +64,22 @@ require 'docker'
       }
 =end
 
+#   sudo apt-get install libpq-dev
+
+
 # docker rm -f $(docker ps -a -q)
 container = Docker::Container.create('Cmd'=> '/bin/bash','Image' => 'carlochess/fiscalia', 'Tty' => true)
 container.start
 #container.exec(['wget','–quiet','https://gist.githubusercontent.com/carlochess/ca5d171018d5d1798f3c7affbec6564a/raw/fded5ac1417569575fa47e9bce221f4b5e49433c/main.hs', '-P','/tmp'])
 container.exec(['git','clone','https://github.com/ilv/Problems/', '/tmp/borrar'])
-ejecutor = Docker::Container.create('Cmd' => ['/bin/bash'], 'Image' => 'haskell:7.8', 'Tty' => true)
+ejecutor = Docker::Container.create('Cmd' => ['/bin/bash'], 'Image' => 'haskell:7.8', 'Tty' => true, 'HostConfig' => )
 ejecutor.start
 
 str = StringIO.new()
 str = str.binmode
 #container.copy('/tmp') { |chunk| chunks << chunk }
 container.archive_out('/tmp') { |chunk| str.puts chunk }
-#chunks = chunks.join("\n") << "\n"
+chunks = chunks.join("\n") << "\n"
 
 
 =begin
@@ -115,5 +118,5 @@ def listarContenedores
 end
 
 
-#container.delete(:force => true)
+container.delete(:force => true)
 ejecutor.delete(:force => true)
