@@ -17,7 +17,7 @@ class Evaluador
   end
 
   def ejecutarContenido(contEval, comando, entrada) # ['/tmp/main'], "2 2\n2 2\n2 2\n"
-    st = @ejecutor.exec(comando, stdin: StringIO.new(entrada))
+    st = @ejecutor.exec(comando, stdin: StringIO.new(entrada)) # { |stream, chunk| puts "#{stream}: #{chunk}" }
     puts st
   end
 end

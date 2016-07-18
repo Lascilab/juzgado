@@ -70,30 +70,28 @@ require 'docker'
 # docker rm -f $(docker ps -a -q)
 container = Docker::Container.create('Cmd'=> '/bin/bash','Image' => 'carlochess/fiscalia', 'Tty' => true)
 container.start
-#container.exec(['wget','–quiet','https://gist.githubusercontent.com/carlochess/ca5d171018d5d1798f3c7affbec6564a/raw/fded5ac1417569575fa47e9bce221f4b5e49433c/main.hs', '-P','/tmp'])
-container.exec(['git','clone','https://github.com/ilv/Problems/', '/tmp/borrar'])
-ejecutor = Docker::Container.create('Cmd' => ['/bin/bash'], 'Image' => 'haskell:7.8', 'Tty' => true, 'HostConfig' => )
+container.exec(['wget','-q','https://gist.githubusercontent.com/carlochess/ca5d171018d5d1798f3c7affbec6564a/raw/fded5ac1417569575fa47e9bce221f4b5e49433c/main.hs', '-P','/tmp'])
+#container.exec(['git','clone','https://github.com/ilv/Problems/', '/tmp/borrar'])
+ejecutor = Docker::Container.create('Cmd' => ['/bin/bash'], 'Image' => 'haskell:7.8', 'Tty' => true)
 ejecutor.start
 
-str = StringIO.new()
-str = str.binmode
-#container.copy('/tmp') { |chunk| chunks << chunk }
-container.archive_out('/tmp') { |chunk| str.puts chunk }
-chunks = chunks.join("\n") << "\n"
-
-
-=begin
-File.open('output.tar', 'wb') do |file|
-    container.archive_out('/tmp') do |chunk|
-         file.write chunk
-    end
+str = StringIO.new
+#str = str.binmode
+container.archive_out('/tmp') { |chunk| str.write(chunk) }
+str.write "\n"
+puts str.size
+#puts str.string
+archivo = 'output.tar'
+File.delete archivo if File.exist?(archivo)
+File.open(archivo, 'wb') do |file |
+    file.write str.string
 end
-=end
+
 puts "Enviando imagen"
 ejecutor.archive_in_stream('/', overwrite: true) { str.read }
+#ejecutor.archive_in('main.hs' , '/tmp/', 'overwrite' => true)
 
-
-#ejecutor.exec(['ghc','-v0', '-O', '/tmp/main.hs'])
+puts ejecutor.exec(['ghc','-v0', '-O', '/tmp/main.hs'])
 #st = ejecutor.exec(['/tmp/main'], stdin: StringIO.new("2 2\n2 2\n2 2\n"))
 #puts st
 
@@ -118,5 +116,5 @@ def listarContenedores
 end
 
 
-container.delete(:force => true)
-ejecutor.delete(:force => true)
+#container.delete(:force => true)
+#ejecutor.delete(:force => true)
